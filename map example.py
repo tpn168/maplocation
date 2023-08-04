@@ -1,0 +1,30 @@
+from geopy.geocoders import Nominatim
+import folium
+
+# Initialize the geolocator
+geolocator = Nominatim(user_agent="geoapiExercises")
+
+# Define coordinates
+coordinates = {
+    'RM1': ['2.64113', '107.64337'],
+    'RM2': ['16.80835', '96.11995'],
+    'RM5': ['7.69505', '98.34103'],
+    'RM7': ['22.03172', '88.08505'],
+    'SM3': ['1.71415', '101.46530']
+}
+
+# Initialize map centered on a specific latitude and longitude
+# Here, I used the coordinates of the first location, you can use any coordinates.
+m = folium.Map(location=[float(coordinates['RM1'][0]), float(coordinates['RM1'][1])], zoom_start=5)
+
+# Get the location for each point and add markers to the map
+for key in coordinates.keys():
+    location = geolocator.reverse(coordinates[key], exactly_one=True, language='en')
+    print(key + ":", location.address)
+    folium.Marker([float(coordinates[key][0]), float(coordinates[key][1])], 
+                  popup=f'<i>{key}: {location.address}</i>',
+                  tooltip=key).add_to(m)
+    print()
+
+# Save the map
+m.save('map.html')
